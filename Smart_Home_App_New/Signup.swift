@@ -1,10 +1,11 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
-import FirebaseDatabase 
-
+import FirebaseDatabase
 
 struct Signup: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var userName: String = ""
     @State private var number: String = ""
     @State private var email: String = ""
@@ -72,7 +73,11 @@ struct Signup: View {
         .padding()
         .background(Color(UIColor.systemGray6))
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Sign Up"), message: Text(errorMessage ?? ""), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Sign Up"), message: Text(errorMessage ?? ""), dismissButton: .default(Text("OK")) {
+                if errorMessage == "Account created successfully!" {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            })
         }
     }
 
@@ -105,8 +110,6 @@ struct Signup: View {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 self.errorMessage = "Signup Error: \(error.localizedDescription)"
-                print(error)
-                print(result)
                 self.showAlert = true
                 return
             }
@@ -136,7 +139,6 @@ struct Signup: View {
             }
         }
     }
-
 }
 #Preview {
     Signup()

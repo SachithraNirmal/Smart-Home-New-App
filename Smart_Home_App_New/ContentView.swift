@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Smart_Home_App_New
-//
-//  Created by Sachithra on 2025-04-25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -14,5 +7,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+   // ContentView()
+    //Signup()
+    //Login()
 }

@@ -35,7 +35,6 @@ struct HomeLocationView: View {
         }
     }
     
-    // Function to fetch home location from Firebase
     func fetchHomeLocation() {
         let db = Database.database().reference()
         

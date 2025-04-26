@@ -9,7 +9,7 @@ struct ControlView: View {
     @State private var airPurifierOn = true
     @State private var dyerOn = false
 
-    @State private var showAirConditionerPage = false // 👈 NEW
+    @State private var showAirConditionerPage = false
     
     let ref = Database.database().reference()
 

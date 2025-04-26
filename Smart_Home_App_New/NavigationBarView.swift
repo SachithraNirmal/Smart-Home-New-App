@@ -32,15 +32,15 @@ struct NavigationBarView: View {
                     Image(systemName: "archivebox.fill")
                     Text("Storage")
                 }
-            ControlView()
-                .tabItem {
-                    Image(systemName: "archivebox.fill")
-                    Text("Control")
-                }
             SmartLightView()
                 .tabItem {
                     Image(systemName: "archivebox.fill")
                     Text("Control Light")
+                }
+            WidgetView()
+                .tabItem {
+                    Image(systemName: "archivebox.fill")
+                    Text("Widget")
                 }
         }
     }

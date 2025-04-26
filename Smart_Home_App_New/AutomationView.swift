@@ -2,18 +2,17 @@ import SwiftUI
 import Charts
 import Firebase
 import FirebaseDatabase
+import UserNotifications
 
 struct AutomationView: View {
   
     private var ref = Database.database().reference()
-    
     
     @State private var getUpOn = true
     @State private var goodNightOn = false
     @State private var goOutOn = false
     @State private var aRoomOn = false
     @State private var bRoomOn = true
-    
     
     @State private var selectedMonth = "Mar"
     @State private var chartData: [ConsumptionData] = []
@@ -42,15 +41,14 @@ struct AutomationView: View {
         .background(Color(.systemGroupedBackground))
         .ignoresSafeArea(edges: .bottom)
         .onAppear {
+            requestNotificationPermission()
             loadChartData()
         }
-        
         .onChange(of: getUpOn, sendAutomationData)
         .onChange(of: goodNightOn, sendAutomationData)
         .onChange(of: goOutOn, sendAutomationData)
         .onChange(of: aRoomOn, sendAutomationData)
         .onChange(of: bRoomOn, sendAutomationData)
-
     }
     
     var headerView: some View {
@@ -159,8 +157,48 @@ struct AutomationView: View {
                 let data = value.map { ConsumptionData(month: $0.key, kw: $0.value) }
                     .sorted { $0.month < $1.month }
                 chartData = data
+                
+                if data.contains(where: { $0.kw > 350 }) {
+                    sendConsumptionAlert()
+                }
             } else {
                 print(" No chart data found.")
+            }
+        }
+    }
+    
+    func sendConsumptionAlert() {
+        let content = UNMutableNotificationContent()
+        content.title = "High Consumption Alert"
+        content.body = "Your electricity consumption is over 100kW!"
+        content.sound = UNNotificationSound.default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to schedule notification: \(error.localizedDescription)")
+            } else {
+                print("Consumption alert notification scheduled.")
+            }
+        }
+    }
+
+    
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if let error = error {
+                print("Notification permission error: \(error.localizedDescription)")
+            } else if granted {
+                print("Notification permission granted.")
+            } else {
+                print("Notification permission denied.")
             }
         }
     }

@@ -25,8 +25,8 @@ struct Smart_Home_App_NewApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-            //Login()
+            //ContentView()
+            Login()
             //Signup()
             //AirConditionView()
             //AutomationView()
