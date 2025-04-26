@@ -142,6 +142,7 @@ struct Login: View {
             HStack {
                 Text("Don't have an account?")
                 Button("Sign up") {
+                    Signup()
                     
                 }
                 .foregroundColor(.blue)
