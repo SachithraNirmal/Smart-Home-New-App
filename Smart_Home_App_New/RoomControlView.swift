@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct RoomControlView: View {
+    @State private var getUpOn = false
+    @State private var goodnightOn = false
+    @State private var goOutOn = false
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 
-               
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
                         VStack(alignment: .leading) {
@@ -29,17 +32,15 @@ struct RoomControlView: View {
                 .cornerRadius(20)
                 .padding(.horizontal)
                 
-                
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 15) {
-                        AutomationCard(title: "Get up", systemImage: "sunrise.fill")
-                        AutomationCard(title: "Goodnight", systemImage: "moon.fill")
-                        AutomationCard(title: "Go out", systemImage: "car.fill")
+                        AutomationCard(title: "Get up", systemImage: "sunrise.fill", isOn: $getUpOn)
+                        AutomationCard(title: "Goodnight", systemImage: "moon.fill", isOn: $goodnightOn)
+                        AutomationCard(title: "Go out", systemImage: "car.fill", isOn: $goOutOn)
                     }
                     .padding(.horizontal)
                 }
                 
-               
                 VStack(alignment: .leading) {
                     Text("Camera")
                         .font(.headline)
@@ -68,7 +69,6 @@ struct RoomControlView: View {
                     .padding(.horizontal)
                 }
                 
-              
                 VStack(alignment: .leading) {
                     Text("Loudspeaker")
                         .font(.headline)
@@ -91,7 +91,6 @@ struct RoomControlView: View {
                     .shadow(radius: 5)
                     .padding(.horizontal)
                 }
-                
             }
             .padding(.vertical)
         }
@@ -102,6 +101,7 @@ struct RoomControlView: View {
 struct AutomationCard: View {
     var title: String
     var systemImage: String
+    @Binding var isOn: Bool
     
     var body: some View {
         VStack {
@@ -111,7 +111,7 @@ struct AutomationCard: View {
             Text(title)
                 .font(.caption)
                 .padding(.top, 5)
-            Toggle("", isOn: .constant(false))
+            Toggle("", isOn: $isOn)
                 .labelsHidden()
         }
         .padding()

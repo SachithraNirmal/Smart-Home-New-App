@@ -85,9 +85,9 @@ struct SmartLightView: View {
         let data: [String: Any] = ["brightness": brightness]
         ref.child("smartLight/brightness").setValue(data) { error, _ in
             if let error = error {
-                print("❌ Brightness error: \(error.localizedDescription)")
+                print(" Brightness error: \(error.localizedDescription)")
             } else {
-                print("✅ Brightness saved")
+                print(" Brightness saved")
             }
         }
     }
@@ -103,9 +103,9 @@ struct SmartLightView: View {
         
         ref.child("smartLight/schedule").setValue(scheduleData) { error, _ in
             if let error = error {
-                print("❌ Schedule error: \(error.localizedDescription)")
+                print(" Schedule error: \(error.localizedDescription)")
             } else {
-                print("✅ Schedule saved")
+                print(" Schedule saved")
             }
         }
     }

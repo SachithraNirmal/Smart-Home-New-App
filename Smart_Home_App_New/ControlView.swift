@@ -4,45 +4,53 @@ import FirebaseDatabase
 struct ControlView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible())]
     
-    @State private var airConditionOn = true
+    @State private var airConditionOn = false
     @State private var washingMachineOn = false
     @State private var airPurifierOn = true
     @State private var dyerOn = false
+
+    @State private var showAirConditionerPage = false // 👈 NEW
     
-   
     let ref = Database.database().reference()
 
     var body: some View {
-        VStack(spacing: 0) {
-            headerView
-            
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    searchBar
-                    
-                    welcomeSection
-                    
-                    roomTabs
-                    
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        deviceCard(imageName: "air.conditioner", deviceName: "Air condition", location: "Main Bedroom", isOn: $airConditionOn)
-                        deviceCard(imageName: "washer", deviceName: "Washing Machine", location: "1 device", isOn: $washingMachineOn)
-                        deviceCard(imageName: "air.purifier", deviceName: "Air purifier", location: "4 devices", isOn: $airPurifierOn)
-                        deviceCard(imageName: "hairdryer", deviceName: "Dyer", location: "2 Bedroom", isOn: $dyerOn)
+        NavigationStack {
+            VStack(spacing: 0) {
+                headerView
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        searchBar
+                        welcomeSection
+                        roomTabs
+
+                        LazyVGrid(columns: columns, spacing: 20) {
+                            deviceCard(imageName: "air.conditioner", deviceName: "Air condition", location: "Main Bedroom", isOn: $airConditionOn)
+                            deviceCard(imageName: "washer", deviceName: "Washing Machine", location: "1 device", isOn: $washingMachineOn)
+                            deviceCard(imageName: "air.purifier", deviceName: "Air purifier", location: "4 devices", isOn: $airPurifierOn)
+                            deviceCard(imageName: "hairdryer", deviceName: "Dyer", location: "2 Bedroom", isOn: $dyerOn)
+                        }
                     }
+                    .padding()
                 }
-                .padding()
             }
-            
+            .background(Color(.systemGroupedBackground))
+            .ignoresSafeArea(edges: .bottom)
+            .onChange(of: airConditionOn) { newValue in
+                sendDeviceStates()
+                if newValue == true {
+                    showAirConditionerPage = true 
+                }
+            }
+            .onChange(of: washingMachineOn, sendDeviceStates)
+            .onChange(of: airPurifierOn, sendDeviceStates)
+            .onChange(of: dyerOn, sendDeviceStates)
+            .navigationDestination(isPresented: $showAirConditionerPage) {
+                AirConditionView()
+            }
         }
-        .background(Color(.systemGroupedBackground))
-        .ignoresSafeArea(edges: .bottom)
-        .onChange(of: airConditionOn, sendDeviceStates)
-        .onChange(of: washingMachineOn, sendDeviceStates)
-        .onChange(of: airPurifierOn, sendDeviceStates)
-        .onChange(of: dyerOn, sendDeviceStates)
     }
-    
+
     func sendDeviceStates() {
         let data: [String: Bool] = [
             "AirCondition": airConditionOn,
@@ -53,17 +61,17 @@ struct ControlView: View {
         
         ref.child("devices").setValue(data) { error, _ in
             if let error = error {
-                print("❌ Failed to send device states: \(error.localizedDescription)")
+                print("Failed to send device states: \(error.localizedDescription)")
             } else {
-                print("✅ Device states updated in Firebase.")
+                print("Device states updated in Firebase.")
             }
         }
     }
-    
+
     var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("28°C  ☀️   70%  📅  Wed, May 24th")
+                Text("28°C     70%    Wed, May 24th")
                     .font(.caption)
                     .foregroundColor(.white)
                 Text("Control")
@@ -149,8 +157,6 @@ struct ControlView: View {
     }
 }
 
-struct ControlView_Previews: PreviewProvider {
-    static var previews: some View {
-        ControlView()
-    }
+#Preview {
+    ControlView()
 }

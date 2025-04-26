@@ -56,7 +56,7 @@ struct AutomationView: View {
     var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("28°C  ☀️   70%  📅  Wed, May 24th")
+                Text("28°C     70%    Wed, May 24th")
                     .font(.caption)
                     .foregroundColor(.white)
                 Text("Automation")
@@ -146,9 +146,9 @@ struct AutomationView: View {
         
         ref.child("automationStatus").setValue(data) { error, _ in
             if let error = error {
-                print("❌ Failed to send: \(error.localizedDescription)")
+                print(" Failed to send: \(error.localizedDescription)")
             } else {
-                print("✅ Automation data sent to Firebase.")
+                print(" Automation data sent to Firebase.")
             }
         }
     }
@@ -160,7 +160,7 @@ struct AutomationView: View {
                     .sorted { $0.month < $1.month }
                 chartData = data
             } else {
-                print("⚠️ No chart data found.")
+                print(" No chart data found.")
             }
         }
     }

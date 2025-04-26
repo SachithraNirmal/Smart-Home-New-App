@@ -1,6 +1,22 @@
 import SwiftUI
+import Firebase
 
 struct WidgetView: View {
+    
+    @State private var isLightOn = false  // Track light state locally
+    
+    // Function to update light state in Firebase
+    func updateLightState(isOn: Bool) {
+        let db = Database.database().reference()
+        db.child("lights").setValue(["isOn": isOn]) { error, _ in
+            if let error = error {
+                print("Failed to update light state: \(error.localizedDescription)")
+            } else {
+                print("Light state updated successfully")
+            }
+        }
+    }
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -22,7 +38,7 @@ struct WidgetView: View {
                                 .font(.caption)
                         }
                     }
-                    
+                    .padding(.top, 50)
                     Divider()
                     
                     HStack {
@@ -33,7 +49,7 @@ struct WidgetView: View {
                                 Image(systemName: "sun.max.fill")
                                     .font(.caption)
                                     .foregroundColor(.yellow)
-                                Text("65°") 
+                                Text("65°")
                                     .font(.caption2)
                             }
                         }
@@ -64,7 +80,6 @@ struct WidgetView: View {
                 
                 Text("Weather")
                 
-                
                 VStack {
                     Image("bedroom")
                         .resizable()
@@ -75,21 +90,33 @@ struct WidgetView: View {
                     VStack(spacing: 10) {
                         Text("Control Lights")
                             .font(.headline)
+                        
+                        // Turn On Button
                         Button(action: {
-                         
+                            updateLightState(isOn: true)
+                            isLightOn = true   // Set light ON
                         }) {
                             Text("Turn On")
                                 .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(isLightOn ? Color.blue : Color.gray.opacity(0.3))  // Change color based on light state
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
-                        .buttonStyle(.borderedProminent)
                         
+                        // Turn Off Button
                         Button(action: {
-                            
+                            updateLightState(isOn: false)
+                            isLightOn = false  // Set light OFF
                         }) {
                             Text("Turn Off")
                                 .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(!isLightOn ? Color.blue : Color.gray.opacity(0.3))  // Change color based on light state
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                         }
-                        .buttonStyle(.bordered)
+                        
                     }
                     .padding()
                     
@@ -102,9 +129,8 @@ struct WidgetView: View {
                 
                 Spacer()
                 
-                
             }
-            .navigationTitle("Widget")
+            .navigationTitle("")
             .padding(10)
             .frame(height: 1)
         }
